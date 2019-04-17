@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\components\TestService;
 use app\models\Product;
+use app\models\User;
 use yii\db\Query;
 use yii\helpers\VarDumper;
 use yii\web\Controller;
@@ -12,52 +13,12 @@ class TestController extends Controller
 {
     public function actionIndex()
     {
-        $service = \Yii::$app->test->run();
+        $users1 = User::find()->joinWith(User::RELATION_TASKS_CREATOR_ID)->asArray()->all();
 
-        $product = Product::findOne(4);
-        //$product = new Product();
-        //$data = \Yii::$app->db->createCommand('SELECT * FROM {{product}} WHERE id=:id', [':id' => $id])->queryAll();
-        //$data = \Yii::$app->db->createCommand()->update('product', ['price' => 999], 'id = :id', [':id' => $id]);
-        //$data = \Yii::$app->db->createCommand()->insert('product', ['price' => 999], 'id = :id', [':id' => $id]);
-        //$data = \Yii::$app->db->createCommand()->delete('product');
-        /*        $data = \Yii::$app->db->createCommand()->batchInsert('product', ['price', 'name', 'created_at'], [
-                    [999, 'name1'],
-                    [999, 'name2'],
-                    [999, 'name3'],
-                ]);*/
-        //$data->execute();
-        $id = 2;
-        $query = new Query();
-        $data = $query->from('product')
-            ->select(['id', 'cost' => 'price'])
-            ->where(['id' => 1, 'price' => 999])
-            ->all();
-        _log($data);
-        //_end($data);
-
-        /*        $product = new Product();
-                $data = [
-                    'id' => 15,
-                    'name' => 'bike',
-                    'price' => '15000$',
-                    'category' => 'vehicle'
-                ];
-                $product->name = ' <p>Book</p> ';
-                $product->price = 999;
-                $product->created_at = 1547000;
-
-                $product->setAttributes($data);
-
-                $product->validate();
-                //$product->getErrors();
-                return VarDumper::dumpAsString($product->getAttributes(), 4, true);*/
-        //\Yii::info('success', 'pay');
-
+        $title = "Hello World!!";
         return $this->render('index', [
-            'title' => 'Yii2 Framework',
-            'content' => 'Welcome to GeekBrains',
-            'service' => $service,
-            'product' => $product,
+            'title' => $title,
+            'users' => $users1,
         ]);
     }
 
@@ -117,29 +78,21 @@ class TestController extends Controller
 
     public function actionSelect()
     {
-        $query = new Query();
-        $query1 = new Query();
-        $query2 = new Query();
-        $query3 = new Query();
-
-        $data = $query->from('user')
+        $data = (new Query())->from('user')
             ->where(['id' => 1])
             ->all();
 
-        $data1 = $query1->from('user')
+        $data1 = (new Query())->from('user')
             ->where(['>', 'id', '1'])
             ->orderBy(['username' => SORT_DESC])
             ->all();
 
-        $data2 = $query2->from('user')->count('*');
+        $data2 = (new Query())->from('user')->count('');
 
-        $data3 = $query3->from('task')
+        $data3 = (new Query())->from('task')
             ->innerJoin('user', 'user.id = task.creator_id')
             ->all();
 
 
-        //_end($data);
-        //_end($data1);
-        _end($data3);
     }
 }
