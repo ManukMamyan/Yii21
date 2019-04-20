@@ -50,6 +50,14 @@ $config = [
                     'logVars' => [],
                 ],
 
+                [
+                    'class' => yii\log\FileTarget::class,
+                    'levels' => ['info'],
+                    'categories' => ['login'],
+                    'logFile' => "@runtime/logs/login.log",
+                    'logVars' => [],
+                ],
+
             ],
         ],
         'db' => $db,

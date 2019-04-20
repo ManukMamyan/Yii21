@@ -60,6 +60,8 @@ class LoginForm extends Model
     public function login()
     {
         if ($this->validate()) {
+            $time = date("F j, Y, g:i a");
+            \Yii::info("{$this->username} successfully logged in at {$time}", 'login');
             return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
         }
         return false;
@@ -68,12 +70,12 @@ class LoginForm extends Model
     /**
      * Finds user by [[username]]
      *
-     * @return UserBase|null
+     * @return User|null
      */
     public function getUser()
     {
         if ($this->_user === false) {
-            $this->_user = UserBase::findByUsername($this->username);
+            $this->_user = User::findByUsername($this->username);
         }
 
         return $this->_user;

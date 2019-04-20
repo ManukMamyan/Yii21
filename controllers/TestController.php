@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\components\TestService;
 use app\models\Product;
 use app\models\User;
+use yii\base\Security;
 use yii\db\Query;
 use yii\helpers\VarDumper;
 use yii\web\Controller;
@@ -13,6 +14,7 @@ class TestController extends Controller
 {
     public function actionIndex()
     {
+        //echo \Yii::$app->getSecurity()->generatePasswordHash('VCVvfyer1984');exit;
         $users1 = User::find()->joinWith(User::RELATION_TASKS_CREATOR_ID)->asArray()->all();
 
         $title = "Hello World!!";

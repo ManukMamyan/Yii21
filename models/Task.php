@@ -3,6 +3,8 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "task".
@@ -19,6 +21,9 @@ use Yii;
  * @property User $updater
  * @property TaskUser[] $taskUsers
  * @property User[] $accessedUsers
+ *
+ * @mixin TimestampBehavior
+ * @mixin BlameableBehavior
  */
 class Task extends \yii\db\ActiveRecord
 {
@@ -45,8 +50,22 @@ class Task extends \yii\db\ActiveRecord
             [['description'], 'string'],
             [['creator_id', 'updater_id', 'created_at', 'updated_at'], 'integer'],
             [['title'], 'string', 'max' => 255],
-            [['creator_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['creator_id' => 'id']],
-            [['updater_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['updater_id' => 'id']],
+            [['creator_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['creator_id' => 'id']],
+            [['updater_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['updater_id' => 'id']],
+        ];
+    }
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+            ],
+            [
+                'class' => BlameableBehavior::class,
+                'createdByAttribute' => 'creator_id',
+                'updatedByAttribute' => 'updater_id'
+            ]
         ];
     }
 
@@ -79,7 +98,7 @@ class Task extends \yii\db\ActiveRecord
      */
     public function getUpdater()
     {
-        return $this->hasOne(User::className(), ['id' => 'updater_id']);
+        return $this->hasOne(User::class, ['id' => 'updater_id']);
     }
 
     /**
@@ -87,12 +106,12 @@ class Task extends \yii\db\ActiveRecord
      */
     public function getTaskUsers()
     {
-        return $this->hasMany(TaskUser::className(), ['task_id' => 'id']);
+        return $this->hasMany(TaskUser::class, ['task_id' => 'id']);
     }
 
     public function getAccessedUsers()
     {
-        return $this->hasMany(User::className(), ['id' => 'user_id'])
+        return $this->hasMany(User::class, ['id' => 'user_id'])
             ->via(Task::RELATION_TASK_USERS);
     }
 
