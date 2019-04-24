@@ -60,9 +60,11 @@ class LoginForm extends Model
     public function login()
     {
         if ($this->validate()) {
-            $time = date("F j, Y, g:i a");
-            \Yii::info("{$this->username} successfully logged in at {$time}", 'login');
-            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
+            if (Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0)) {
+                $time = date("F j, Y, g:i a");
+                \Yii::info("{$this->username} successfully logged in at {$time}", 'login');
+                return true;
+            }
         }
         return false;
     }

@@ -43,13 +43,14 @@ class TaskController extends Controller
      * Lists all Task models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionMy()
     {
+        $query = Task::find()->byCreator(\Yii::$app->user->id);
         $dataProvider = new ActiveDataProvider([
-            'query' => Task::find(),
+            'query' =>$query,
         ]);
 
-        return $this->render('index', [
+        return $this->render('my', [
             'dataProvider' => $dataProvider,
         ]);
     }
@@ -77,7 +78,8 @@ class TaskController extends Controller
         $model = new Task();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            Yii::$app->session->setFlash('success', 'Task was created successfully');
+            return $this->redirect(['my']);
         }
 
         return $this->render('create', [
