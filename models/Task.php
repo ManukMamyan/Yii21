@@ -90,7 +90,7 @@ class Task extends \yii\db\ActiveRecord
      */
     public function getCreator()
     {
-        return $this->hasOne(User::className(), ['id' => 'creator_id']);
+        return $this->hasOne(User::class, ['id' => 'creator_id']);
     }
 
     /**
@@ -112,7 +112,7 @@ class Task extends \yii\db\ActiveRecord
     public function getAccessedUsers()
     {
         return $this->hasMany(User::class, ['id' => 'user_id'])
-            ->via(Task::RELATION_TASK_USERS);
+            ->via(self::RELATION_TASK_USERS);
     }
 
     /**

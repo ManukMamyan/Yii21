@@ -6,7 +6,9 @@ use app\components\TestService;
 use app\models\Product;
 use app\models\User;
 use yii\base\Security;
+use yii\caching\FileDependency;
 use yii\db\Query;
+use yii\helpers\Url;
 use yii\helpers\VarDumper;
 use yii\web\Controller;
 
@@ -14,6 +16,10 @@ class TestController extends Controller
 {
     public function actionIndex()
     {
+        _end(\Yii::t('yii', 'File upload failed.'));
+        //_end(\Yii::$aliases);
+        //_end(Url::to(['task/view', 'id' => 1], true));
+
         //echo \Yii::$app->getSecurity()->generatePasswordHash('VCVvfyer1984');exit;
         $users1 = User::find()->joinWith(User::RELATION_TASKS_CREATOR_ID)->asArray()->all();
 
@@ -22,6 +28,19 @@ class TestController extends Controller
             'title' => $title,
             'users' => $users1,
         ]);
+    }
+
+    public function actionCash()
+    {
+        $key = 'key';
+        $fileName = 'fileName';
+
+        if (\Yii::$app->cache->exists($key)) {
+            $data = \Yii::$app->cache->get($key);
+        }else {
+            $data = file_get_contents($fileName);
+            \Yii::$app->cache->set($key, $data, 3600, new FileDependency(['fileName' => $fileName]));
+        }
     }
 
     public function actionInsert()
